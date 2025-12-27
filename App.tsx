@@ -10,8 +10,8 @@ import {
   getInbox, createInboxMessage, updateInboxMessage, deleteInboxMessage,
   getAbout, updateAbout,
   getUsers, createUser, updateUser, deleteUser,
-  getCurrentUser, signOut, supabase
-} from './utils/supabase';
+  getCurrentUser, signOut, initializeDefaultData
+} from './utils/database';
 
 // Pages
 import Home from './pages/Home';
@@ -145,35 +145,23 @@ const App: React.FC = () => {
     loadData();
   }, []);
 
-  // Auth state listener
+  // Initialize app data and get initial user
   useEffect(() => {
-    const getInitialUser = async () => {
+    const initializeApp = async () => {
       try {
+        // Initialize default data (users, etc.)
+        await initializeDefaultData();
+
+        // Get current user
         const currentUser = await getCurrentUser();
         setUser(currentUser);
       } catch (error) {
-        console.error('Error getting initial user:', error);
+        console.error('Error initializing app:', error);
         setUser(null);
       }
     };
 
-    getInitialUser();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (session?.user) {
-        try {
-          const currentUser = await getCurrentUser();
-          setUser(currentUser);
-        } catch (error) {
-          console.error('Error getting user on auth change:', error);
-          setUser(null);
-        }
-      } else {
-        setUser(null);
-      }
-    });
-
-    return () => subscription.unsubscribe();
+    initializeApp();
   }, []);
 
   const handleLogin = (u: User) => {

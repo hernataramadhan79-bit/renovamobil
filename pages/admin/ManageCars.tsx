@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { Car } from '../../types';
 import { BRANDS } from '../../constants';
 import ConfirmationModal from '../../components/ConfirmationModal';
-import { getCars, createCar, updateCar, deleteCar, uploadImage } from '../../utils/supabase';
+import { getCars, createCar, updateCar, deleteCar, uploadImage, getImageUrl } from '../../utils/database';
 
 // --- KOMPONEN INPUT ANGKA DENGAN FORMAT ---
 const FormattedNumberInput = ({ value, onValueChange, className, placeholder, min, required }) => {
@@ -300,7 +300,7 @@ const ManageCars: React.FC<ManageCarsProps> = () => {
         {file ? (
           <img src={URL.createObjectURL(file)} className="w-full h-full object-cover" alt="Preview" />
         ) : (url && url.trim() !== '') ? (
-          <img src={url} className="w-full h-full object-cover" alt="Preview" />
+          <img src={getImageUrl(url)} className="w-full h-full object-cover" alt="Preview" />
         ) : (
           <span className="text-xs text-slate-400">No Img</span>
         )}
@@ -379,7 +379,7 @@ const ManageCars: React.FC<ManageCarsProps> = () => {
                         <td className="px-6 py-4 w-24">
                             <div className="w-20 h-14 rounded-lg overflow-hidden bg-slate-100 border border-slate-200 shadow-sm">
                             {car.image ? (
-                              <img src={car.image} alt={car.name} className="w-full h-full object-cover" onError={(e) => e.currentTarget.src = 'https://via.placeholder.com/100?text=No+Img'} />
+                              <img src={getImageUrl(car.image)} alt={car.name} className="w-full h-full object-cover" onError={(e) => e.currentTarget.src = 'https://via.placeholder.com/100?text=No+Img'} />
                             ) : (
                               <div className="w-full h-full flex items-center justify-center text-xs text-slate-400">No Img</div>
                             )}
@@ -668,7 +668,7 @@ const ManageCars: React.FC<ManageCarsProps> = () => {
                                   {selectedImageFile ? (
                                     <img src={URL.createObjectURL(selectedImageFile)} className="w-full h-full object-cover" alt="Preview" />
                                   ) : formData.image ? (
-                                    <img src={formData.image} className="w-full h-full object-cover" alt="Preview" />
+                                    <img src={getImageUrl(formData.image)} className="w-full h-full object-cover" alt="Preview" />
                                   ) : (
                                     <span className="text-xs text-slate-400">No Image</span>
                                   )}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { NewsPost } from '../../types';
 import ConfirmationModal from '../../components/ConfirmationModal';
-import { getNews, createNews, updateNews, deleteNews, uploadImage } from '../../utils/supabase';
+import { getNews, createNews, updateNews, deleteNews, uploadImage, getImageUrl } from '../../utils/database';
 
 interface ManageNewsProps {
   // No props needed
@@ -175,7 +175,7 @@ const ManageNews: React.FC<ManageNewsProps> = () => {
                 {news.map(post => (
                   <div key={post.id} className="bg-white border rounded-2xl overflow-hidden shadow-sm group relative hover:shadow-md transition-shadow">
                     <div className="h-44 relative overflow-hidden bg-slate-100">
-                      <img src={post.image} className="h-full w-full object-cover transition-transform group-hover:scale-110" alt={post.title} />
+                      <img src={getImageUrl(post.image)} className="h-full w-full object-cover transition-transform group-hover:scale-110" alt={post.title} />
                       {/* Action Buttons */}
                       <div className="absolute top-3 right-3 flex gap-2 z-[10]">
                         <button type="button" onClick={() => handleEdit(post)} className="bg-white/90 backdrop-blur text-blue-600 p-2 rounded-full shadow-lg border border-slate-100 hover:bg-blue-50 active:scale-90 transition-all">
@@ -292,7 +292,7 @@ const ManageNews: React.FC<ManageNewsProps> = () => {
                                   {selectedImageFile ? (
                                     <img src={URL.createObjectURL(selectedImageFile)} className="w-full h-full object-cover" alt="Preview" />
                                   ) : formData.image ? (
-                                    <img src={formData.image} className="w-full h-full object-cover" alt="Preview" />
+                                    <img src={getImageUrl(formData.image)} className="w-full h-full object-cover" alt="Preview" />
                                   ) : (
                                     <span className="text-xs text-slate-400">No Img</span>
                                   )}

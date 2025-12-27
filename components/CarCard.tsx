@@ -2,6 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Car } from '../types';
+import { getImageUrl } from '../utils/database';
 
 interface CarCardProps {
   car: Car;
@@ -12,7 +13,7 @@ const CarCard: React.FC<CarCardProps> = ({ car }) => {
     <div className="group bg-white rounded-xl overflow-hidden border border-slate-200 shadow-sm transition-all hover:border-orange-200 hover:shadow-xl hover:shadow-orange-500/10">
       <div className="relative h-64 overflow-hidden">
         <img
-          src={car.image}
+          src={getImageUrl(car.image)}
           alt={car.name}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         />

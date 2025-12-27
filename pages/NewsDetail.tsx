@@ -2,6 +2,7 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { NewsPost } from '../types';
+import { getImageUrl } from '../utils/database';
 
 interface NewsDetailProps {
   news: NewsPost[];
@@ -24,7 +25,7 @@ const NewsDetail: React.FC<NewsDetailProps> = ({ news }) => {
     <div className="min-h-screen bg-slate-50 pb-24">
       {/* Hero Image */}
       <div className="w-full h-[50vh] relative">
-         <img src={post.image} alt={post.title} className="w-full h-full object-cover" />
+         <img src={getImageUrl(post.image)} alt={post.title} className="w-full h-full object-cover" />
          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent"></div>
          <div className="absolute bottom-0 left-0 right-0 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
             <Link to="/news" className="inline-block mb-6 text-orange-400 hover:text-orange-300 font-bold text-sm tracking-widest uppercase transition-colors">

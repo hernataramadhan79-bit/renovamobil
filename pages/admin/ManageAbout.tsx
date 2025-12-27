@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { AboutData } from '../../types';
-import { uploadImage } from '../../utils/supabase';
+import { uploadImage, getImageUrl } from '../../utils/database';
 
 interface ManageAboutProps {
   data: AboutData;
@@ -172,7 +172,7 @@ const ManageAbout: React.FC<ManageAboutProps> = ({ data, onSave }) => {
                                     {galleryFiles[index] ? (
                                         <img src={URL.createObjectURL(galleryFiles[index]!)} alt="preview" className="w-full h-full object-cover" />
                                     ) : url ? (
-                                        <img src={url} alt="preview" className="w-full h-full object-cover" onError={(e) => (e.currentTarget.src = 'https://via.placeholder.com/150?text=Error')} />
+                                        <img src={getImageUrl(url)} alt="preview" className="w-full h-full object-cover" onError={(e) => (e.currentTarget.src = 'https://via.placeholder.com/150?text=Error')} />
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center text-slate-300 text-xs">No Img</div>
                                     )}

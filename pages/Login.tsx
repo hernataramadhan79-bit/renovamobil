@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User } from '../types';
-import { signUp, signIn, getCurrentUser } from '../utils/supabase';
+import { signUp, signIn, getCurrentUser } from '../utils/database';
 
 interface LoginModalProps {
   onLogin: (user: User) => void;
@@ -44,12 +44,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ onLogin, user, onClose }) => {
       }
 
       try {
-        const result = await signUp(email, password, name);
-        if (result.user && !result.user.email_confirmed_at) {
-          setSuccessMsg('Akun berhasil dibuat! Silakan periksa email Anda untuk konfirmasi sebelum login.');
-        } else {
-          setSuccessMsg('Akun berhasil dibuat! Anda dapat login sekarang.');
-        }
+        await signUp(email, password, name);
+        setSuccessMsg('Akun berhasil dibuat! Anda dapat login sekarang.');
         setTimeout(() => {
           setIsRegister(false);
           setSuccessMsg('');

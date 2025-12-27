@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Car } from '../types';
+import { getImageUrl } from '../utils/database';
 
 interface CarDetailProps {
   cars: Car[];
@@ -67,9 +68,9 @@ const CarDetail: React.FC<CarDetailProps> = ({ cars }) => {
                 {/* 1. Image Slider */}
                 <div className="space-y-4">
                     <div className="relative aspect-[16/10] bg-slate-200 rounded-3xl overflow-hidden group shadow-md border border-slate-200">
-                        <img 
-                            src={galleryImages[activeImageIndex]} 
-                            alt={`${car.name} - view ${activeImageIndex + 1}`} 
+                        <img
+                            src={getImageUrl(galleryImages[activeImageIndex])}
+                            alt={`${car.name} - view ${activeImageIndex + 1}`}
                             className="w-full h-full object-cover transition-all duration-500"
                         />
                         
@@ -103,7 +104,7 @@ const CarDetail: React.FC<CarDetailProps> = ({ cars }) => {
                                         activeImageIndex === idx ? 'border-blue-600 ring-2 ring-blue-100' : 'border-transparent opacity-70 hover:opacity-100'
                                     }`}
                                 >
-                                    <img src={img} alt={`thumb ${idx}`} className="w-full h-full object-cover" />
+                                    <img src={getImageUrl(img)} alt={`thumb ${idx}`} className="w-full h-full object-cover" />
                                 </button>
                             ))}
                         </div>
