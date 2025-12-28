@@ -46,6 +46,7 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children, user, onLogout, onOpenLogin }) => {
   const location = useLocation();
   const isAdminPage = location.pathname.startsWith('/admin');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Scroll to top on route change
   useEffect(() => {
@@ -58,8 +59,21 @@ const Layout: React.FC<LayoutProps> = ({ children, user, onLogout, onOpenLogin }
     }
     return (
       <div className="flex h-screen overflow-hidden bg-slate-50 text-slate-900 animate-fade-in">
-        <AdminSidebar onLogout={onLogout} />
+        <AdminSidebar onLogout={onLogout} isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
         <main className="flex-1 p-4 md:p-8 overflow-y-auto bg-slate-100 relative">
+          {/* Mobile Header with Hamburger */}
+          <div className="md:hidden flex items-center justify-between mb-6 pb-4 border-b border-slate-200">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="p-2 bg-blue-900 text-white rounded-lg shadow-lg"
+            >
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+            <span className="text-lg font-bold text-slate-800">Admin Panel</span>
+            <div className="w-10"></div> {/* Spacer for centering */}
+          </div>
           {children}
         </main>
       </div>
