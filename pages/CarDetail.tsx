@@ -69,7 +69,7 @@ const CarDetail: React.FC<CarDetailProps> = ({ cars }) => {
                 <div className="space-y-4">
                     <div className="relative aspect-[16/10] bg-slate-200 rounded-3xl overflow-hidden group shadow-md border border-slate-200">
                         <img
-                            src={getImageUrl(galleryImages[activeImageIndex])}
+                            src={(galleryImages[activeImageIndex] && galleryImages[activeImageIndex].startsWith('http') ? galleryImages[activeImageIndex] : getImageUrl(galleryImages[activeImageIndex])) || 'https://via.placeholder.com/800x500?text=No+Image'}
                             alt={`${car.name} - view ${activeImageIndex + 1}`}
                             className="w-full h-full object-cover transition-all duration-500"
                         />
@@ -104,7 +104,7 @@ const CarDetail: React.FC<CarDetailProps> = ({ cars }) => {
                                         activeImageIndex === idx ? 'border-blue-600 ring-2 ring-blue-100' : 'border-transparent opacity-70 hover:opacity-100'
                                     }`}
                                 >
-                                    <img src={getImageUrl(img)} alt={`thumb ${idx}`} className="w-full h-full object-cover" />
+                                    <img src={(img && img.startsWith('http') ? img : getImageUrl(img)) || 'https://via.placeholder.com/100x80?text=No+Image'} alt={`thumb ${idx}`} className="w-full h-full object-cover" />
                                 </button>
                             ))}
                         </div>

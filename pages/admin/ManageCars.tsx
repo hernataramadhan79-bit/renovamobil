@@ -117,6 +117,7 @@ const ManageCars: React.FC<ManageCarsProps> = () => {
   const [formData, setFormData] = useState<Partial<Car>>(initialFormState);
   const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
   const [galleryFiles, setGalleryFiles] = useState<(File | null)[]>([]);
+  const [imageInputKey, setImageInputKey] = useState(Date.now()); // Key untuk reset input
 
   // Memoized form data to prevent unnecessary re-renders
   const memoizedFormData = useMemo(() => formData, [formData]);
@@ -156,6 +157,7 @@ const ManageCars: React.FC<ManageCarsProps> = () => {
     setEditingId(car.id);
     setSelectedImageFile(null);
     setGalleryFiles(new Array((car.gallery || []).length).fill(null));
+    setImageInputKey(Date.now());
     setViewMode('form');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -165,6 +167,7 @@ const ManageCars: React.FC<ManageCarsProps> = () => {
     setFormData(initialFormState);
     setSelectedImageFile(null);
     setGalleryFiles([]);
+    setImageInputKey(Date.now());
     setViewMode('form');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -172,6 +175,8 @@ const ManageCars: React.FC<ManageCarsProps> = () => {
   const handleCancel = () => {
     setViewMode('list');
     setEditingId(null);
+    setSelectedImageFile(null);
+    setImageInputKey(Date.now());
   };
 
   // Removed custom handlers, using direct state update
@@ -227,6 +232,8 @@ const ManageCars: React.FC<ManageCarsProps> = () => {
     }
     setViewMode('list');
     setEditingId(null);
+    setSelectedImageFile(null);
+    setImageInputKey(Date.now());
   };
 
   // Gallery Helpers - Optimized with useCallback
@@ -284,6 +291,7 @@ const ManageCars: React.FC<ManageCarsProps> = () => {
     <div className="flex gap-3 items-start">
       <div className="flex-1">
         <input
+          key={`gallery-input-${index}-${Date.now()}`}
           type="file"
           accept="image/*"
           className="w-full p-2 border border-slate-300 rounded bg-white text-slate-900 mb-1"
@@ -300,8 +308,8 @@ const ManageCars: React.FC<ManageCarsProps> = () => {
         {file ? (
           <img src={URL.createObjectURL(file)} className="w-full h-full object-cover" alt="Preview" />
         ) : (url && url.trim() !== '') ? (
-          <img src={getImageUrl(url)} className="w-full h-full object-cover" alt="Preview" />
-        ) : (
+           <img src={(url.startsWith('http') ? url : getImageUrl(url)) || 'https://via.placeholder.com/64x48?text=No+Image'} className="w-full h-full object-cover" alt="Preview" />
+         ) : (
           <span className="text-xs text-slate-400">No Img</span>
         )}
       </div>
@@ -379,7 +387,7 @@ const ManageCars: React.FC<ManageCarsProps> = () => {
                         <td className="px-6 py-4 w-24">
                             <div className="w-20 h-14 rounded-lg overflow-hidden bg-slate-100 border border-slate-200 shadow-sm">
                             {car.image ? (
-                              <img src={getImageUrl(car.image)} alt={car.name} className="w-full h-full object-cover" onError={(e) => e.currentTarget.src = 'https://via.placeholder.com/100?text=No+Img'} />
+                              <img src={(car.image.startsWith('http') ? car.image : getImageUrl(car.image)) || 'https://via.placeholder.com/100x80?text=No+Img'} alt={car.name} className="w-full h-full object-cover" onError={(e) => e.currentTarget.src = 'https://via.placeholder.com/100x80?text=No+Img'} />
                             ) : (
                               <div className="w-full h-full flex items-center justify-center text-xs text-slate-400">No Img</div>
                             )}
@@ -650,6 +658,7 @@ const ManageCars: React.FC<ManageCarsProps> = () => {
                         <div className="w-full flex gap-4 items-start">
                              <div className="flex-1">
                                 <input
+                                    key={imageInputKey}
                                     type="file"
                                     accept="image/*"
                                     className="w-full p-2.5 border border-slate-300 rounded mb-2 bg-white text-slate-900"
@@ -657,6 +666,8 @@ const ManageCars: React.FC<ManageCarsProps> = () => {
                                       const file = e.target.files?.[0];
                                       if (file) {
                                         setSelectedImageFile(file);
+                                        // Reset key untuk memungkinkan upload file yang sama lagi
+                                        setImageInputKey(Date.now());
                                       }
                                     }}
                                 />
@@ -668,7 +679,7 @@ const ManageCars: React.FC<ManageCarsProps> = () => {
                                   {selectedImageFile ? (
                                     <img src={URL.createObjectURL(selectedImageFile)} className="w-full h-full object-cover" alt="Preview" />
                                   ) : formData.image ? (
-                                    <img src={getImageUrl(formData.image)} className="w-full h-full object-cover" alt="Preview" />
+                                    <img src={(formData.image.startsWith('http') ? formData.image : getImageUrl(formData.image))} className="w-full h-full object-cover" alt="Preview" />
                                   ) : (
                                     <span className="text-xs text-slate-400">No Image</span>
                                   )}

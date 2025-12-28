@@ -2,6 +2,7 @@
 // 100% FREE - No external dependencies - Perfect for development and small applications
 
 import { Car, NewsPost, InboxMessage, Testimonial, AboutData, User } from '../types';
+import { INITIAL_CARS, INITIAL_NEWS, INITIAL_INBOX, INITIAL_TESTIMONIALS, INITIAL_ABOUT } from '../constants';
 
 // ============================================================================
 // CARS MANAGEMENT
@@ -345,6 +346,25 @@ export const clearAllData = () => {
   localStorage.removeItem(IMAGES_KEY);
 };
 
+export const forceInitializeDefaultData = async () => {
+  // Force initialize all default data
+  localStorage.setItem('renova_cars', JSON.stringify(INITIAL_CARS));
+  localStorage.setItem('renova_news', JSON.stringify(INITIAL_NEWS));
+  localStorage.setItem('renova_inbox', JSON.stringify(INITIAL_INBOX));
+  localStorage.setItem('renova_testimonials', JSON.stringify(INITIAL_TESTIMONIALS));
+  localStorage.setItem('renova_about', JSON.stringify(INITIAL_ABOUT));
+
+  // Initialize users
+  await initializeDefaultUsers();
+
+  console.log('All default data force initialized');
+};
+
+// Make it available globally for console access
+if (typeof window !== 'undefined') {
+  (window as any).forceInitData = forceInitializeDefaultData;
+}
+
 export const exportData = () => {
   return {
     cars: localStorage.getItem('renova_cars'),
@@ -401,6 +421,45 @@ export const initializeDefaultData = async () => {
   // Initialize default users
   await initializeDefaultUsers();
 
-  // You can add default cars, news, etc. here if needed
+  // Initialize default cars if not exists
+  const existingCars = await getCars();
+  if (existingCars.length === 0) {
+    localStorage.setItem('renova_cars', JSON.stringify(INITIAL_CARS));
+    console.log('Default cars initialized');
+  }
+
+  // Initialize default news if not exists
+  const existingNews = await getNews();
+  if (existingNews.length === 0) {
+    localStorage.setItem('renova_news', JSON.stringify(INITIAL_NEWS));
+    console.log('Default news initialized');
+  }
+
+  // Initialize default inbox if not exists
+  const existingInbox = await getInbox();
+  if (existingInbox.length === 0) {
+    localStorage.setItem('renova_inbox', JSON.stringify(INITIAL_INBOX));
+    console.log('Default inbox initialized');
+  }
+
+  // Initialize default testimonials if not exists
+  const existingTestimonials = await getTestimonials();
+  if (existingTestimonials.length === 0) {
+    localStorage.setItem('renova_testimonials', JSON.stringify(INITIAL_TESTIMONIALS));
+    console.log('Default testimonials initialized');
+  }
+
+  // Initialize default about if not exists
+  try {
+    const existingAbout = await getAbout();
+    if (!existingAbout.description && !existingAbout.mission) {
+      localStorage.setItem('renova_about', JSON.stringify(INITIAL_ABOUT));
+      console.log('Default about initialized');
+    }
+  } catch (error) {
+    localStorage.setItem('renova_about', JSON.stringify(INITIAL_ABOUT));
+    console.log('Default about initialized');
+  }
+
   console.log('Default data initialized');
 };

@@ -10,7 +10,7 @@ import {
   getInbox, createInboxMessage, updateInboxMessage, deleteInboxMessage,
   getAbout, updateAbout,
   getUsers, createUser, updateUser, deleteUser,
-  getCurrentUser, signOut, initializeDefaultData
+  getCurrentUser, signOut, initializeDefaultData, forceInitializeDefaultData
 } from './utils/database';
 
 // Pages
@@ -163,8 +163,14 @@ const App: React.FC = () => {
   useEffect(() => {
     const initializeApp = async () => {
       try {
-        // Initialize default data (users, etc.)
-        await initializeDefaultData();
+        // Check if cars data exists, if not force initialize all data
+        const existingCars = await getCars();
+        if (existingCars.length === 0) {
+          await forceInitializeDefaultData();
+        } else {
+          // Still initialize users if needed
+          await initializeDefaultData();
+        }
 
         // Get current user
         const currentUser = await getCurrentUser();

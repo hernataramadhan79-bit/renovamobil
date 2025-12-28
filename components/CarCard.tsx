@@ -13,7 +13,7 @@ const CarCard: React.FC<CarCardProps> = ({ car }) => {
     <div className="group bg-white rounded-xl overflow-hidden border border-slate-200 shadow-sm transition-all hover:border-orange-200 hover:shadow-xl hover:shadow-orange-500/10">
       <div className="relative h-64 overflow-hidden">
         <img
-          src={getImageUrl(car.image)}
+          src={(car.image && car.image.startsWith('http') ? car.image : getImageUrl(car.image)) || 'https://via.placeholder.com/400x300?text=No+Image'}
           alt={car.name}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
